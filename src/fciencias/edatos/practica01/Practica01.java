@@ -33,6 +33,38 @@ public class Practica01{
 
 		return result;
 	}
+	/**
+	* Encuentra el índice del primer y último 
+	* valor específico, con complejidad reducida.
+	* @param num un arreglo de enteros.
+	* @param value el valor a encontrar índices.
+	* @return un arreglo de longitud 2, con el primer y 
+	* último índice donde se encuentra el elemento value.
+	*/
+	public static int[] myFindFirstAndLast(int[] num, int value){
+		int[] result = new int[2];
+		result[0] = -1;
+		result[1] = -1;
+		
+		for(int i = 0; i < num.length ; i++){
+
+			//verificamos que no encontraramos antes y el valor
+			if(result[0]==-1 && num[i] == value){ 
+				result[0] = i;
+			}
+			//verificamos que no encontraramos antes y el valor
+			if(result[1]==-1 && num[num.length-1-i] == value){ 
+				result[1] = num.length-1-i;
+			}
+			// evitamos recorrer mas de lo necesario
+			if(result[0]!=-1 && result[1]!=-1){ 
+				break;
+			}
+		}
+			
+
+		return result;
+	}
 
     /**
     * Verifica si un tablero de sudoku de 6x6 es válido, considerando
@@ -72,6 +104,84 @@ public class Practica01{
 		return true;
 	}
 
+	 /**
+    * Verifica si un tablero de sudoku de 6x6 es válido, considerando
+    * únicamente los casos de las verticales y las diagonales, con complejidad reducida.
+    * @param board el arreglo bidimensional de 6x6 que representa
+    * el tablero.
+    * @return true si el tablero es válido, false, en otro caso.
+    */
+    public static boolean myIsSudokuValid(int[][] board){
+    	int length = board.length;
+		/*
+		las matrices verificador{x|y} es una matriz que guardara si los 
+		valores de 1 a length se han encuentrado en la fila (x) o columna (y) ,
+		cada posicion representa un valor igual a posicion de casilla + 1
+		*/
+		boolean verificadorx[]; 
+		boolean verificadory[]; 
+
+		/*
+		contador{x|y} serviran para ahorrar un ciclo y verificar rapido
+		que todos los valores se encontraron
+		*/
+		int contadorx;
+		int contadory;
+		for (int i = 0; i < length ; i++) {
+
+			verificadorx = new boolean[length]; // reseteamos a false
+			verificadory = new boolean[length]; // reseteamos a false
+			contadorx=0; //reseteamos a 0
+			contadory=0; //reseteamos a 0
+			for (int j = 0 ; j < length ; j++ ) {
+				int valorx = board[i][j]; //valor casilla en fila
+				int valory = board[j][i]; //valor casilla en columna
+				int xindex = valorx-1; //posicion en verificadorx
+				int yindex = valory-1; //posicion en verificadory
+				
+				/*
+				verificamos que sean valores de rango valido, si no lo son
+				no es valido el sudoku y evitamos tambien indexOutofbounds exception
+				*/		
+				if(valorx<1 || valorx>length || valory<1 || valory>length){
+
+					return false;
+				}
+
+				/*
+				Se encontro un valor duplicado en fila y columna, no hace
+				falta continuar ya que es invalido
+				*/	
+				if(verificadorx[xindex] || verificadory[yindex]){
+						return false;
+				}
+
+				//Marcamos como encontrado y sumamos si no se habia encontrado
+				if(!verificadorx[xindex]){
+					verificadorx[xindex]=true; // validamos existencia de valor en fila
+					contadorx++;
+				}
+				
+				//Marcamos como encontrado y sumamos si no se habia encontrado
+				if(!verificadory[yindex]){
+					verificadory[yindex]=true; // validamos existencia de valor en columna
+					contadory++;
+				}
+				
+			}
+			/*
+				Si llego hasta aqui ya que no debe haber repetidos
+				solamente hace falta verificar que coincida el tamano
+				con las coincidencias encontradas
+			*/	
+			if(contadorx!=length  || contadory!=length){
+				return false;
+			}
+
+		}
+		return true;
+	}
+
 	/**
 	* Rota position cantidad de veces los elementos de un arreglo
 	* hacia el vecino izquierdo.
@@ -89,6 +199,9 @@ public class Practica01{
 	}
 
 	public static void main(String[] args) {
+		//variables para tiempos de ejecucion
+		long inicio,fin;
+
 		// EJEMPLOS DE ACTIVIDAD 1
 		System.out.println("\nEJEMPLOS DE ACTIVIDAD 1\n");
 
@@ -96,15 +209,37 @@ public class Practica01{
 		int[] ejemplo1b = {4,2,7,5,4,3,7,2,5,3,4,1};
 		int[] ejemplo1c = {3,2,1,4,2};
 
+		inicio = System.currentTimeMillis();
 		int[] resultado1a = findFirstAndLast(ejemplo1a, 2);
-		System.out.println("["+resultado1a[0]+", "+resultado1a[1]+"]");
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1a[0]+", "+resultado1a[1]+"] Tiempo (ms): "+(fin-inicio));
 
+		inicio = System.currentTimeMillis();
 		int[] resultado1b = findFirstAndLast(ejemplo1b, 15);
-		System.out.println("["+resultado1b[0]+", "+resultado1b[1]+"]");
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1b[0]+", "+resultado1b[1]+"] Tiempo (ms): "+(fin-inicio));
 
+		inicio = System.currentTimeMillis();
 		int[] resultado1c = findFirstAndLast(ejemplo1c, 1);
-		System.out.println("["+resultado1c[0]+", "+resultado1c[1]+"]");
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1c[0]+", "+resultado1c[1]+"] Tiempo (ms): "+(fin-inicio));
 
+		// NUEVO ALGORITMO EJEMPLOS DE ACTIVIDAD 1
+		System.out.println("\nNUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 1\n");
+				inicio = System.currentTimeMillis();
+		resultado1a = myFindFirstAndLast(ejemplo1a, 2);
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1a[0]+", "+resultado1a[1]+"] Tiempo (ms): "+(fin-inicio));
+
+		inicio = System.currentTimeMillis();
+		resultado1b = myFindFirstAndLast(ejemplo1b, 15);
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1b[0]+", "+resultado1b[1]+"] Tiempo (ms): "+(fin-inicio));
+
+		inicio = System.currentTimeMillis();
+		resultado1c = myFindFirstAndLast(ejemplo1c, 1);
+		fin = System.currentTimeMillis();
+		System.out.println("["+resultado1c[0]+", "+resultado1c[1]+"] Tiempo (ms): "+(fin-inicio));
 
 
 		// EJEMPLOS DE ACTIVIDAD 2
@@ -123,17 +258,28 @@ public class Practica01{
 							{5,2,3,1,6,4},
 							{1,3,5,4,1,6},
 							{6,4,1,5,2,3}};
-
+		inicio = System.currentTimeMillis();
 		boolean resultado2a = isSudokuValid(ejemplo2a);
-		System.out.println("El sudoku 1 es válido: "+resultado2a);
-
+		fin = System.currentTimeMillis();
+		System.out.println("El sudoku 1 es válido: "+resultado2a + " -Tiempo (ms): "+(fin-inicio));
+		inicio = System.currentTimeMillis();
 		boolean resultado2b = isSudokuValid(ejemplo2b);
-		System.out.println("El sudoku 2 es válido: "+resultado2b);
-
-
+		fin = System.currentTimeMillis();
+		System.out.println("El sudoku 2 es válido: "+resultado2b + " - Tiempo (ms): "+(fin-inicio));
+		
+		// NUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 2
+		System.out.println("\nEJEMPLOS DE ACTIVIDAD 2\n");
+		inicio = System.currentTimeMillis();
+		resultado2a = myIsSudokuValid(ejemplo2a);
+		fin = System.currentTimeMillis();
+		System.out.println("El sudoku 1 es válido: "+resultado2a + " -Tiempo (ms): "+(fin-inicio));
+		inicio = System.currentTimeMillis();
+		resultado2b = myIsSudokuValid(ejemplo2b);
+		fin = System.currentTimeMillis();
+		System.out.println("El sudoku 2 es válido: "+resultado2b + " - Tiempo (ms): "+(fin-inicio));
 
 		// EJEMPLOS DE ACTIVIDAD 3
-		System.out.println("\nEJEMPLOS DE ACTIVIDAD 1\n");
+		System.out.println("\nEJEMPLOS DE ACTIVIDAD 3\n");
 
 		rotateArray(ejemplo1a, 5);
 		rotateArray(ejemplo1b, 0);
