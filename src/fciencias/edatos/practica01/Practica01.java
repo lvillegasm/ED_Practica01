@@ -1,3 +1,4 @@
+package fciencias.edatos.practica01;
 /**
 * Práctica 1 del curso de Estructuras de Datos.
 * @author Emmanuel Cruz Hernández.
