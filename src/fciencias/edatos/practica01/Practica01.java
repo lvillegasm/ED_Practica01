@@ -119,8 +119,8 @@ public class Practica01{
 		valores de 1 a length se han encuentrado en la fila (x) o columna (y) ,
 		cada posicion representa un valor igual a posicion de casilla + 1
 		*/
-		boolean verificadorx[]; 
-		boolean verificadory[]; 
+		boolean[] verificadorx; 
+		boolean[] verificadory; 
 
 		/*
 		contador{x|y} serviran para ahorrar un ciclo y verificar rapido
@@ -183,6 +183,8 @@ public class Practica01{
 		return true;
 	}
 
+
+
 	/**
 	* Rota position cantidad de veces los elementos de un arreglo
 	* hacia el vecino izquierdo.
@@ -199,6 +201,40 @@ public class Practica01{
 		}
 	}
 
+		/**
+	* Rota position cantidad de veces los elementos de un arreglo
+	* hacia el vecino izquierdo, con complejidad reducida.
+	* @param num el arreglo de enteros a rotar.
+	* @param position la cantidad de espacios a rotar.
+	*/
+	public static void myRotateArray(int[] num, int position){
+		/*
+		Obtenemos la cantidad de desplazamientos reales ya que si se desplaza
+		una cantidad múltiplo de num.length, volverán a estar en el mismo
+		lugar los valores, lo que nos interesa son los movimientos restantes
+		después de mover la mayor cantidad posible de num.length posiciones,
+		para ello usamos simplemente la operación módulo.
+		 */
+		int size = num.length;
+		int realMoves= (position%size); 
+		boolean[] overwritten = new boolean[size]; // para revisar si un valor ya fue sobreescrito
+		int[] originalvalue = new int[size]; // guardar los valores originales en caso de sobreescribirse
+		for(int i = 0; i < size ; i++){
+			if(i>=realMoves){ //fácil obtención de índice si no alcanza el límite del array, solamente restar.
+				overwritten[i-realMoves]=true;
+				originalvalue[i-realMoves]=num[i-realMoves];
+				num[i-realMoves]=overwritten[i]?originalvalue[i]:num[i]; // si fue sobreescrita usar el valor original guardado, sino usar el valor de num
+
+			}else{ //size-realMoves+1 nos indica la casilla  en caso de que se mueva más allá del límite del array en los valores al haber limitado a movimientos netos.
+				overwritten[size-realMoves+i]=true;
+				originalvalue[size-realMoves+i]=num[size-realMoves+i];
+				num[size-realMoves+i] = overwritten[i]?originalvalue[i]:num[i];  // si fue sobreescrita usar el valor original guardado, sino usar el valor de num
+
+			}
+
+		}
+	}
+
 	public static void main(String[] args) {
 		//variables para tiempos de ejecucion
 		long inicio,fin;
@@ -209,6 +245,10 @@ public class Practica01{
 		int[] ejemplo1a = {1,4,2,1,6,2,9};
 		int[] ejemplo1b = {4,2,7,5,4,3,7,2,5,3,4,1};
 		int[] ejemplo1c = {3,2,1,4,2};
+
+		int[] ejemplo1a2 = {1,4,2,1,6,2,9};
+		int[] ejemplo1b2 = {4,2,7,5,4,3,7,2,5,3,4,1};
+		int[] ejemplo1c2 = {3,2,1,4,2};
 
 		inicio = System.currentTimeMillis();
 		int[] resultado1a = findFirstAndLast(ejemplo1a, 2);
@@ -269,7 +309,7 @@ public class Practica01{
 		System.out.println("El sudoku 2 es válido: "+resultado2b + " - Tiempo (ms): "+(fin-inicio));
 		
 		// NUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 2
-		System.out.println("\nEJEMPLOS DE ACTIVIDAD 2\n");
+		System.out.println("\nNUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 2\n");
 		inicio = System.currentTimeMillis();
 		resultado2a = myIsSudokuValid(ejemplo2a);
 		fin = System.currentTimeMillis();
@@ -281,23 +321,59 @@ public class Practica01{
 
 		// EJEMPLOS DE ACTIVIDAD 3
 		System.out.println("\nEJEMPLOS DE ACTIVIDAD 3\n");
-
+		inicio = System.currentTimeMillis();
 		rotateArray(ejemplo1a, 5);
-		rotateArray(ejemplo1b, 0);
-		rotateArray(ejemplo1c, 2);
+		fin = System.currentTimeMillis();
 
-		System.out.println("Arreglo 1 rotado 5 veces");
+		System.out.println("Arreglo 1 rotado 5 veces -Tiempo (ms): "+(fin-inicio));
 		for(int i : ejemplo1a)
 			System.out.print(i + " ");
 
-		System.out.println("\nArreglo 2 rotado 0 veces");
+		inicio = System.currentTimeMillis();
+		rotateArray(ejemplo1b, 0);
+		fin = System.currentTimeMillis();
+		System.out.println("\nArreglo 2 rotado 0 veces -Tiempo (ms): "+(fin-inicio));
 		for(int i : ejemplo1b)
 			System.out.print(i + " ");
 
-		System.out.println("\nArreglo 3 rotado 2 veces");
+
+		inicio = System.currentTimeMillis();
+		rotateArray(ejemplo1c, 2);
+		fin = System.currentTimeMillis();
+		System.out.println("\nArreglo 3 rotado 2 veces -Tiempo (ms): "+(fin-inicio));
 		for(int i : ejemplo1c)
 			System.out.print(i + " ");
 
+
+			// NUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 3
+		System.out.println("\n NUEVO ALGORITMO CON EJEMPLOS DE ACTIVIDAD 3\n");
+		inicio = System.currentTimeMillis();
+		myRotateArray(ejemplo1a2, 5);
+		fin = System.currentTimeMillis();
+
+		System.out.println("Arreglo 1 rotado 5 veces -Tiempo (ms): "+(fin-inicio));
+		for(int i : ejemplo1a2)
+			System.out.print(i + " ");
+
+		inicio = System.currentTimeMillis();
+		myRotateArray(ejemplo1b2, 0);
+		fin = System.currentTimeMillis();
+		System.out.println("\nArreglo 2 rotado 0 veces -Tiempo (ms): "+(fin-inicio));
+		for(int i : ejemplo1b2)
+			System.out.print(i + " ");
+
+
+		inicio = System.currentTimeMillis();
+		myRotateArray(ejemplo1c2, 2);
+		fin = System.currentTimeMillis();
+		System.out.println("\nArreglo 3 rotado 2 veces -Tiempo (ms): "+(fin-inicio));
+		for(int i : ejemplo1c2)
+			System.out.print(i + " ");
+
+
+		
+
+	
 		System.out.println("\n\nFIN DE EJEMPLOS\n");
 	}
 }
