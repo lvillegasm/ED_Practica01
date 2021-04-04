@@ -46,8 +46,10 @@ public class Practica01{
 		int[] result = new int[2];
 		result[0] = -1;
 		result[1] = -1;
-		
-		for(int i = 0; i < num.length ; i++){
+		int ultimoValorMitadIzquierda=-1; //Valor auxiliar para evitar recorrer más de la mitad
+		int ultimoValorMitadDerecha=-1; //Valor auxiliar para evitar recorrer más de la mita
+		int mitad=(num.length/2)+(num.length%2); //obtenemos el lugar del valor o valores centrales del arreglo
+		for(int i = 0; i < mitad ; i++){
 
 			//verificamos que no encontraramos antes y el valor
 			if(result[0]==-1 && num[i] == value){ 
@@ -59,10 +61,23 @@ public class Practica01{
 			}
 			// evitamos recorrer mas de lo necesario
 			if(result[0]!=-1 && result[1]!=-1){ 
-				break;
+				return result; //tenemos lo que necesitamos
+			}
+			//guardamos para que conservemos la ultima aparicion del lado izquierdo
+			if(num[i] == value){ 
+				ultimoValorMitadIzquierda = i;
+			}
+			//guardamos para que conservemos la ultima aparicion del lado derecho
+			if(num[num.length-1-i] == value){ 
+				ultimoValorMitadDerecha = num.length-1-i;
 			}
 		}
-			
+			if(result[0]==-1 && ultimoValorMitadDerecha!=-1){ //revisamos si estaba en la otra mitad y le asignamos el valor
+			result[0]=ultimoValorMitadDerecha;
+			}
+			if(result[1]==-1 && ultimoValorMitadIzquierda!=-1){ //guardamos para que conservemos la ultima aparicion del lado izquierdo
+			result[1]=ultimoValorMitadIzquierda;
+			}
 
 		return result;
 	}
@@ -171,7 +186,7 @@ public class Practica01{
 				
 			}
 			/*
-				Si llego hasta aqui ya que no debe haber repetidos
+				Si llega hasta aqui es que ya no debe haber repetidos
 				solamente hace falta verificar que coincida el tamano
 				con las coincidencias encontradas
 			*/	
